@@ -4,15 +4,16 @@ KssStore provides a uniform interface for different storage mechanisms, allowing
 
 ## Supported Storage Types
 
-- `localStorage` (default, browser)
-- `sessionStorage` (browser)
-- `IndexedDB` (browser)
-- `MongoDB` (server)
-- `SQLite` (server)
-- `FileSystem` (server)
-- `MySQL` (server)
-- `PostgreSQL` (server)
-- `Redis` (server)
+- [x] `localStorage` (default, browser)
+- [x] `sessionStorage` (browser)
+- [x] `IndexedDB` (browser)
+- [x] `MongoDB` (server)
+- [x] `FileSystem` (server)
+
+- [ ] `MySQL` (server)
+- [ ] `SQLite` (server)
+- [ ] `PostgreSQL` (server)
+- [ ] `Redis` (server)
 
 ## Installation
 
@@ -165,10 +166,38 @@ npm run test:coverage
 ```
 
 Test environments are set up automatically:
+
 - Browser storage (localStorage, sessionStorage) uses DOM mocks
 - IndexedDB uses the fake-indexeddb library
 - MongoDB uses mongodb-memory-server for in-memory testing
 - FileSystem creates temporary directories for testing
+
+### Publishing to npm
+
+The package includes scripts to simplify the publishing process:
+
+```bash
+# Before publishing, you should:
+# 1. Update version in package.json
+# 2. Ensure tests pass and build succeeds
+
+# Perform a dry run to check what would be published
+npm run release:dry
+
+# Publish a new version to npm
+npm run release
+
+# Publish a beta version
+npm run release:beta
+```
+
+For first-time publishers:
+
+1. Create an npm account if you don't have one: `npm adduser`
+2. Login to npm: `npm login`
+3. Update repository info in package.json
+4. Set the package version (for first release use `1.0.0`)
+5. Run `npm run release`
 
 ### Implementing a New Storage Adapter
 

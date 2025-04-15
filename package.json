@@ -4,12 +4,22 @@
   "description": "Different ways of storing data by the same interface",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test",
+    "version": "npm run build",
+    "release": "npm run build && npm test && npm publish",
+    "release:beta": "npm run build && npm test && npm publish --tag beta",
+    "release:dry": "npm run build && npm test && npm publish --dry-run"
   },
   "keywords": [
     "storage",
@@ -18,17 +28,31 @@
     "IndexedDB",
     "MongoDB",
     "SQLite",
-    "File System"
+    "FileSystem",
+    "MySQL",
+    "PostgreSQL",
+    "Redis"
   ],
   "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kssbox/kss-store.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kssbox/kss-store/issues"
+  },
+  "homepage": "https://github.com/kssbox/kss-store#readme",
   "license": "MIT",
   "dependencies": {
     "mongodb": "^5.0.0"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "@types/node": "^18.0.0",
     "@vitest/coverage-v8": "^0.34.0",
-    "fake-indexeddb": "^6.0.0",
+    "fake-indexeddb": "^4.0.0",
     "happy-dom": "^12.0.0",
     "jsdom": "^22.1.0",
     "mongodb-memory-server": "^8.15.0",
