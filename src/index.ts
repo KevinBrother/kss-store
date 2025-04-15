@@ -1,4 +1,5 @@
 import { IStore, StorageType, StorageOptions } from "./interface";
+import { WebStorageStore } from "./WebStorage";
 
 export class KssStore implements IStore {
   private store: IStore | null = null;
@@ -14,10 +15,17 @@ export class KssStore implements IStore {
 
   private async initStore(): Promise<void> {
     try {
-      // Map storage type to file name
-      const typeToFileName: Record<StorageType, string> = {
-        localStorage: 'LocalStorage',
-        sessionStorage: 'SessionStorage',
+      // Handle web storage types directly without dynamic imports
+      if (this.type === 'localStorage' || this.type === 'sessionStorage') {
+        this.store = new WebStorageStore({
+          storageType: this.type,
+          ...this.options
+        });
+        return;
+      }
+
+      // Map storage type to file name for other types
+      const typeToFileName: Record<Exclude<StorageType, 'localStorage' | 'sessionStorage'>, string> = {
         IndexedDB: 'IndexedDB',
         MongoDB: 'MongoDB',
         SQLite: 'SQLite',
@@ -27,7 +35,7 @@ export class KssStore implements IStore {
         Redis: 'Redis'
       };
 
-      const fileName = typeToFileName[this.type] || this.type;
+      const fileName = typeToFileName[this.type as Exclude<StorageType, 'localStorage' | 'sessionStorage'>] || this.type;
       
       this.storePromise = import(`./${fileName}`)
         .then((module) => {
@@ -84,3 +92,4 @@ export class KssStore implements IStore {
 }
 
 export * from './interface';
+export * from './WebStorage';

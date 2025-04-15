@@ -24,8 +24,6 @@ For optional database drivers:
 
 ```bash
 # For MongoDB (already included as a dependency)
-# For SQLite
-npm install better-sqlite3
 # For MySQL
 npm install mysql2
 # For PostgreSQL
@@ -64,15 +62,39 @@ await storage.clear(); // Clear all stored items
 
 ## Storage-Specific Configuration
 
-### localStorage / sessionStorage
+### Web Storage (localStorage / sessionStorage)
+
+Both localStorage and sessionStorage are implemented using a unified WebStorage adapter with identical API - only the storage mechanism differs:
 
 ```javascript
-const storage = new KssStore({
-  type: 'localStorage', // or 'sessionStorage'
+// Using localStorage
+const localStorage = new KssStore({
+  type: 'localStorage',
   options: {
     prefix: 'myapp' // Optional prefix for keys
   }
 });
+
+// Using sessionStorage
+const sessionStorage = new KssStore({
+  type: 'sessionStorage',
+  options: {
+    prefix: 'myapp' // Optional prefix for keys
+  }
+});
+
+// Direct access to storage implementations
+import { WebStorageStore, LocalStorageStore, SessionStorageStore } from 'kss-store';
+
+// Unified adapter that can be configured for either localStorage or sessionStorage
+const webStorage = new WebStorageStore({ 
+  storageType: 'localStorage', // or 'sessionStorage'
+  prefix: 'myapp'
+});
+
+// Aliases for backward compatibility
+const localStorage = new LocalStorageStore({ prefix: 'myapp' });
+const sessionStorage = new SessionStorageStore({ prefix: 'myapp' });
 ```
 
 ### IndexedDB
@@ -121,6 +143,41 @@ All storage implementations support the following async methods:
 - `remove(key: string): Promise<void>` - Remove a value
 - `clear(): Promise<void>` - Clear all values
 - `keys(): Promise<string[]>` - Get all keys
+
+## Development
+
+### Running Tests
+
+The project uses Vitest for testing. Each storage implementation has its own test suite.
+
+```bash
+# Install dependencies
+npm install
+
+# Run all tests
+npm test
+
+# Run tests in watch mode during development
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+Test environments are set up automatically:
+- Browser storage (localStorage, sessionStorage) uses DOM mocks
+- IndexedDB uses the fake-indexeddb library
+- MongoDB uses mongodb-memory-server for in-memory testing
+- FileSystem creates temporary directories for testing
+
+### Implementing a New Storage Adapter
+
+To add a new storage adapter:
+
+1. Create a new file in `src/` named after your storage type
+2. Implement the `IStore` interface
+3. Add your storage type to the `StorageType` type in `interface.ts`
+4. Create tests in `tests/` to verify your implementation
 
 ## License
 

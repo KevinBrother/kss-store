@@ -21,6 +21,8 @@ export interface StorageOptions {
     // IndexedDB options
     dbName?: string;
     storeName?: string;
+    // Web Storage options
+    storageType?: 'localStorage' | 'sessionStorage';
     // Any other options
     [key: string]: any;
 }
